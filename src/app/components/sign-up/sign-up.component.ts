@@ -47,14 +47,14 @@ export class SignUpComponent implements OnInit {
   }
 
   passwordValidator(control: AbstractControl): { [key: string]: boolean } | null {
-    const password = control.value.toLowerCase();
-    const firstName = this.signUpForm?.get('firstName')?.value.toLowerCase();
-    const lastName = this.signUpForm?.get('lastName')?.value.toLowerCase();
+    const password = control.value;
+    const firstName = this.signUpForm?.get('firstName')?.value;
+    const lastName = this.signUpForm?.get('lastName')?.value;
 
     if (!password) return null;
     if (password.length < 8) return {'minLength': true};
     if (!/[a-z]/.test(password) || !/[A-Z]/.test(password)) return {'case': true};
-    if (password.includes(firstName) || password.includes(lastName)) return {'nameIncluded': true};
+    if (password.toLowerCase().includes(firstName.toLowerCase()) || password.toLowerCase().includes(lastName.toLowerCase())) return {'nameIncluded': true};
 
     return null;
   }
