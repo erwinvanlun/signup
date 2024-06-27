@@ -7,6 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCard, MatCardContent, MatCardHeader } from '@angular/material/card';
+import { AccountService } from '../../services/account/account.service';
 
 @Component({
   selector: 'app-sign-up',
@@ -19,18 +20,17 @@ import { MatCard, MatCardContent, MatCardHeader } from '@angular/material/card';
     MatInputModule,
     MatButtonModule,
     MatFormFieldModule,
-    HttpClientModule,
     MatCard,
     MatCardContent,
-    MatCardHeader
+    MatCardHeader,
   ],
-  providers: [HttpClient]
+  providers: [AccountService]
 })
 export class SignUpComponent implements OnInit {
   signUpForm: FormGroup;
   fullName = '';
 
-  constructor(private fb: FormBuilder, private http: HttpClient) {
+  constructor(private fb: FormBuilder, private accountService: AccountService, private http: HttpClient) {
     this.signUpForm = this.fb.group({
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
@@ -52,27 +52,31 @@ export class SignUpComponent implements OnInit {
     const lastName = this.signUpForm?.get('lastName')?.value.toLowerCase();
 
     if (!password) return null;
-    if (password.length < 8) return { 'minLength': true };
-    if (!/[a-z]/.test(password) || !/[A-Z]/.test(password)) return { 'case': true };
-    if (password.includes(firstName) || password.includes(lastName)) return { 'nameIncluded': true };
+    if (password.length < 8) return {'minLength': true};
+    if (!/[a-z]/.test(password) || !/[A-Z]/.test(password)) return {'case': true};
+    if (password.includes(firstName) || password.includes(lastName)) return {'nameIncluded': true};
 
     return null;
   }
 
-  onSubmit(): void {
-    const formValue = this.signUpForm.value;
-    this.http.get(`https://jsonplaceholder.typicode.com/photos/${formValue.lastName.length}`)
-      .subscribe((photos: any) => {
-        const thumbnailUrl = photos.thumbnailUrl;
-        const postData = {
-          ...formValue,
-          thumbnailUrl
-        };
+  async onSubmit(): Promise<void> {
 
-        this.http.post('https://jsonplaceholder.typicode.com/users', postData)
-          .subscribe(response => {
-            console.log('User created:', response);
-          });
-      });
+    this.signUpForm.disable();
+
+    console.log('Signing up... ')
+
+    try {
+      await (this.accountService.signup(this.signUpForm.value));
+
+      console.log('Successfully signed up');
+
+      this.signUpForm.enable();
+
+    } catch (e) {
+      console.error('Error signing up:', e);
+      this.signUpForm.enable();
+
+    }
+
   }
 }
