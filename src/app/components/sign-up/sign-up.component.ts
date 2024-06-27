@@ -47,9 +47,9 @@ export class SignUpComponent implements OnInit {
   }
 
   passwordValidator(control: AbstractControl): { [key: string]: boolean } | null {
-    const password = control.value;
-    const firstName = this.signUpForm?.get('firstName')?.value;
-    const lastName = this.signUpForm?.get('lastName')?.value;
+    const password = control.value.toLowerCase();
+    const firstName = this.signUpForm?.get('firstName')?.value.toLowerCase();
+    const lastName = this.signUpForm?.get('lastName')?.value.toLowerCase();
 
     if (!password) return null;
     if (password.length < 8) return { 'minLength': true };
