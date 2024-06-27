@@ -6,7 +6,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatCard } from '@angular/material/card';
+import { MatCard, MatCardContent, MatCardHeader } from '@angular/material/card';
 
 @Component({
   selector: 'app-sign-up',
@@ -20,7 +20,9 @@ import { MatCard } from '@angular/material/card';
     MatButtonModule,
     MatFormFieldModule,
     HttpClientModule,
-    MatCard
+    MatCard,
+    MatCardContent,
+    MatCardHeader
   ],
   providers: [HttpClient]
 })

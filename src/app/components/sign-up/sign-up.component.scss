@@ -1,8 +1,12 @@
 
 
-.column-form {
-  display: flex;
-  flex-direction: column;
-  max-width: 50rem;
-  gap: 5rem;
+mat-card {
+  padding: 1rem;
+
+  .column-form {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
 }
+

@@ -1,51 +1,60 @@
 <mat-card>
-  <form class="column-form" [formGroup]="signUpForm" (ngSubmit)="onSubmit()">
-    <mat-form-field appearance="fill">
-      <mat-label>First Name</mat-label>
-      <input matInput placeholder="First Name" formControlName="firstName" aria-required="true">
-      <mat-error *ngIf="signUpForm.get('firstName')?.hasError('required')">
-        First Name is required
-      </mat-error>
-    </mat-form-field>
 
-    <mat-form-field appearance="fill">
-      <mat-label>Last Name</mat-label>
-      <input matInput placeholder="Last Name" formControlName="lastName" aria-required="true">
-      <mat-error *ngIf="signUpForm.get('lastName')?.hasError('required')">
-        Last Name is required
-      </mat-error>
-    </mat-form-field>
+  <mat-card-header>
+    <h2>Sign up for our services</h2>
+  </mat-card-header>
 
-    <mat-form-field appearance="fill">
-      <mat-label>Email</mat-label>
-      <input matInput placeholder="Email" formControlName="email" aria-required="true">
-      <mat-error *ngIf="signUpForm.get('email')?.hasError('required')">
-        Email is required
-      </mat-error>
-      <mat-error *ngIf="signUpForm.get('email')?.hasError('email')">
-        Please enter a valid email address
-      </mat-error>
-    </mat-form-field>
+  <mat-card-content>
 
-    <mat-form-field appearance="fill">
-      <mat-label>Password</mat-label>
-      <input matInput type="password" placeholder="Password" formControlName="password" aria-required="true">
-      <mat-error *ngIf="signUpForm.get('password')?.hasError('required')">
-        Password is required
-      </mat-error>
-      <mat-error *ngIf="signUpForm.get('password')?.hasError('minLength')">
-        Password must be at least 8 characters long
-      </mat-error>
-      <mat-error *ngIf="signUpForm.get('password')?.hasError('case')">
-        Password must contain both upper and lower case letters
-      </mat-error>
-      <mat-error *ngIf="signUpForm.get('password')?.hasError('nameIncluded')">
-        Password should not contain your first or last name
-      </mat-error>
-    </mat-form-field>
+    <form class="column-form" [formGroup]="signUpForm" (ngSubmit)="onSubmit()">
+      <mat-form-field appearance="outline">
+        <mat-label>First Name</mat-label>
+        <input matInput placeholder="First Name" formControlName="firstName" aria-required="true">
+        <mat-error *ngIf="signUpForm.get('firstName')?.hasError('required')">
+          First Name is required
+        </mat-error>
+      </mat-form-field>
 
-    <button mat-raised-button type="submit" [disabled]="signUpForm.invalid" aria-disabled="true">Sign Up</button>
-  </form>
+      <mat-form-field appearance="outline">
+        <mat-label>Last Name</mat-label>
+        <input matInput placeholder="Last Name" formControlName="lastName" aria-required="true">
+        <mat-error *ngIf="signUpForm.get('lastName')?.hasError('required')">
+          Last Name is required
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Email</mat-label>
+        <input matInput placeholder="Email" formControlName="email" aria-required="true">
+        <mat-error *ngIf="signUpForm.get('email')?.hasError('required')">
+          Email is required
+        </mat-error>
+        <mat-error *ngIf="signUpForm.get('email')?.hasError('email')">
+          Please enter a valid email address
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Password</mat-label>
+        <input matInput type="password" placeholder="Password" formControlName="password" aria-required="true">
+        <mat-error *ngIf="signUpForm.get('password')?.hasError('required')">
+          Password is required
+        </mat-error>
+        <mat-error *ngIf="signUpForm.get('password')?.hasError('minLength')">
+          Password must be at least 8 characters long
+        </mat-error>
+        <mat-error *ngIf="signUpForm.get('password')?.hasError('case')">
+          Password must contain both upper and lower case letters
+        </mat-error>
+        <mat-error *ngIf="signUpForm.get('password')?.hasError('nameIncluded')">
+          Password should not contain your first or last name
+        </mat-error>
+      </mat-form-field>
+
+      <button mat-raised-button type="submit" [disabled]="signUpForm.invalid" aria-disabled="true">Sign Up</button>
+
+    </form>
+  </mat-card-content>
 
   <div *ngIf="fullName">
     <p>Full Name: {{ fullName }}</p>
