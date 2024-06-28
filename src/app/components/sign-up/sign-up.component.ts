@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
@@ -9,6 +9,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCard, MatCardContent, MatCardHeader } from '@angular/material/card';
 import { AccountService } from '../../services/account/account.service';
 import { SignUpFormValue } from './sign-up-form.type';
+import { Subject, takeUntil } from 'rxjs';
 
 const passwordMinLength = 8;
 
@@ -29,9 +30,10 @@ const passwordMinLength = 8;
   ],
   providers: [AccountService]
 })
-export class SignUpComponent implements OnInit {
+export class SignUpComponent implements OnInit, OnDestroy {
   signUpForm: FormGroup;
   fullName = '';
+  protected destroyed$ = new Subject<void>();
 
   constructor(private fb: FormBuilder, private accountService: AccountService) {
     this.signUpForm = this.fb.group({
@@ -44,14 +46,14 @@ export class SignUpComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.signUpForm.valueChanges.subscribe(values => {
+    this.signUpForm.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(values => {
       this.fullName = `${values.firstName} ${values.lastName}`;
     });
 
     // as password is the last field, and user Joe Doe, who used 'Doe' in his
     // password might wonder why the button is not enabled. Therefore, after 8 chars the validator function is executed.
 
-    this.signUpForm.get('password')?.valueChanges.subscribe(value => {
+    this.signUpForm.get('password')?.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(value => {
       if (value.length >= passwordMinLength) {
         this.signUpForm.get('password')?.markAsTouched();
       }
@@ -92,4 +94,10 @@ export class SignUpComponent implements OnInit {
     }
 
   }
+
+  ngOnDestroy(): void {
+    this.destroyed$.next();
+    this.destroyed$.complete();
+  }
+
 }
