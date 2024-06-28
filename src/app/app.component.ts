@@ -11,7 +11,7 @@ import { SignUpComponent } from './components/sign-up/sign-up.component';
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
-  title = 'signup';
+  title = 'Signup';
   fullName = '';
 
   onFullNameChange(fullName: string): void {
