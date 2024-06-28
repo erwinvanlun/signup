@@ -6,7 +6,7 @@ import { SignUpComponent } from './components/sign-up/sign-up.component';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, SignUpComponent],
+  imports: [CommonModule, SignUpComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })

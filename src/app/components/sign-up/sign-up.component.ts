@@ -31,7 +31,6 @@ const passwordMinLength = 8;
 })
 export class SignUpComponent implements OnInit, OnDestroy {
   signUpForm: FormGroup;
-  fullName = '';
   @Output() fullNameChange = new EventEmitter<string>();
   protected destroyed$ = new Subject<void>();
 
