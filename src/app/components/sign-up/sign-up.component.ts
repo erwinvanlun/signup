@@ -10,6 +10,8 @@ import { MatCard, MatCardContent, MatCardHeader } from '@angular/material/card';
 import { AccountService } from '../../services/account/account.service';
 import { SignUpFormValue } from './sign-up-form.type';
 
+const passwordMinLength = 8;
+
 @Component({
   selector: 'app-sign-up',
   templateUrl: './sign-up.component.html',
@@ -45,6 +47,15 @@ export class SignUpComponent implements OnInit {
     this.signUpForm.valueChanges.subscribe(values => {
       this.fullName = `${values.firstName} ${values.lastName}`;
     });
+
+    // as password is the last field, and user Joe Doe, who used 'Doe' in his
+    // password might wonder why the button is not enabled. Therefore, after 8 chars the validator function is executed.
+
+    this.signUpForm.get('password')?.valueChanges.subscribe(value => {
+      if (value.length >= passwordMinLength) {
+        this.signUpForm.get('password')?.markAsTouched();
+      }
+    });
   }
 
   passwordValidator(control: AbstractControl): { [key: string]: boolean } | null {
@@ -53,7 +64,7 @@ export class SignUpComponent implements OnInit {
     const lastName = this.signUpForm?.get('lastName')?.value;
 
     if (!password) return null;
-    if (password.length < 8) return {'minLength': true};
+    if (password.length < passwordMinLength) return {'minLength': true};
     if (!/[a-z]/.test(password) || !/[A-Z]/.test(password)) return {'case': true};
     if (password.toLowerCase().includes(firstName.toLowerCase()) || password.toLowerCase().includes(lastName.toLowerCase())) return {'nameIncluded': true};
 
