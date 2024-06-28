@@ -1,4 +1,7 @@
-
+:host {
+  width: 100%;
+  max-width: 40rem;
+}
 
 mat-card {
   padding: 1rem;
@@ -7,6 +10,18 @@ mat-card {
     display: flex;
     flex-direction: column;
     gap: 2rem;
+  }
+
+  button {
+    color: white;
+
+    &.valid {
+      background-color: green;
+    }
+
+    &.invalid {
+      background-color: grey;
+    }
   }
 }
 

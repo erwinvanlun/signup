@@ -51,7 +51,11 @@
         </mat-error>
       </mat-form-field>
 
-      <button mat-raised-button type="submit" [disabled]="signUpForm.invalid" aria-disabled="true">Sign Up</button>
+      <button mat-raised-button
+              type="submit"
+              [disabled]="signUpForm.invalid"
+              [ngClass]="{'valid': signUpForm.valid, 'invalid': signUpForm.invalid}"
+              [aria-disabled]="signUpForm.invalid">Sign Up</button>
 
     </form>
   </mat-card-content>
