@@ -8,8 +8,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCardModule } from '@angular/material/card';
 import { By } from '@angular/platform-browser';
-import { of, throwError } from 'rxjs';
-import { SignUpFormValue } from './sign-up-form.type';
 
 jest.mock('../../services/account/account.service');
 
@@ -164,7 +162,8 @@ describe('SignUpComponent', () => {
     expect(button.disabled).toBe(false);
   });
 
-  it.only('should call the sign-up function when the form is submitted', async () => {
+  it('should handle successfully signup', async () => {
+
     component.signUpForm.setValue({
       firstName: 'John',
       lastName: 'Doe',
@@ -175,39 +174,41 @@ describe('SignUpComponent', () => {
 
     const button = fixture.debugElement.query(By.css('[data-test-id="signup-button"]')).nativeElement;
 
-    // is onSubmit called?
-    const onSubmitSpy = jest.spyOn(component, 'onSubmit');
-    expect(button.disabled).toBe(false);
+    const consoleLogSpy = jest.spyOn(console, 'log');
     button.click();
     await fixture.whenStable();
-    expect(onSubmitSpy).toHaveBeenCalled();
 
-    // does onSubmit call the service with the right value?
     expect(mockAccountService.signup).toHaveBeenCalledWith({
       firstName: 'John',
       lastName: 'Doe',
       email: 'john.doe@example.com',
       password: 'ValidPassword123'
     });
-    expect(component.signUpForm.enabled).toBe(true); // Ensure form is re-enabled after error
+
+    expect(component.signUpForm.enabled).toBe(true);
+    expect(consoleLogSpy).toHaveBeenCalledWith('Successfully signed up');
+    consoleLogSpy.mockRestore();
   });
 
-  it('should handle sign-up error', async () => {
+  it('should handle signup error', async () => {
     component.signUpForm.setValue({
       firstName: 'John',
       lastName: 'Doe',
       email: 'john.doe@example.com',
       password: 'ValidPassword123'
     });
-    // mockAccountService.signup.mockReturnValue(throwError('Error signing up').toPromise());
+    fixture.detectChanges();
+    mockAccountService.signup =   jest.fn().mockImplementation(() => Promise.reject('error text'));
 
     const button = fixture.debugElement.query(By.css('button')).nativeElement;
+    const consoleErrorSpy = jest.spyOn(console, 'error');
+
     button.click();
-    fixture.detectChanges();
 
     await fixture.whenStable();
 
-    expect(mockAccountService.signup).toHaveBeenCalled();
-    expect(component.signUpForm.enabled).toBe(true); // Ensure form is re-enabled after error
+    expect(component.signUpForm.enabled).toBe(true);
+    expect(consoleErrorSpy).toHaveBeenCalledWith('Error signing up, please try again', 'error text');
+    consoleErrorSpy.mockRestore();
   });
 });

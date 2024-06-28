@@ -88,7 +88,7 @@ export class SignUpComponent implements OnInit, OnDestroy {
       this.signUpForm.enable();
 
     } catch (e) {
-      console.error('Error signing up, please try again:', e);
+      console.error('Error signing up, please try again', e);
 
       this.signUpForm.enable();
 
