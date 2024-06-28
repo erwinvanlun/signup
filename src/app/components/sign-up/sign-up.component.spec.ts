@@ -47,9 +47,9 @@ describe('SignUpComponent', () => {
   describe('Form Validation', () => {
     describe('should invalidate the form if required fields are missing', () => {
       const validFormData = {
-        firstName: 'Joe',
+        firstName: 'John',
         lastName: 'Doe',
-        email: 'joedoe@gmail.com',
+        email: 'johndoe@gmail.com',
         password: 'MyPassword123'
       }
       beforeEach(() => {
@@ -116,7 +116,7 @@ describe('SignUpComponent', () => {
       component.signUpForm.get('password')?.setValue('alllowercase');
       expect(component.signUpForm.get('password')?.errors?.['case']).toBeTruthy();
 
-      component.signUpForm.get('password')?.setValue('ALLUPPERCASE');
+      component.signUpForm.get('password')?.setValue('ALLUPPfERCASE');
       expect(component.signUpForm.get('password')?.errors?.['case']).toBeTruthy();
 
       component.signUpForm.get('password')?.setValue('MixedCasePassword');
@@ -159,7 +159,7 @@ describe('SignUpComponent', () => {
     });
     fixture.detectChanges();
 
-    const button = fixture.debugElement.query(By.css('button')).nativeElement;
+    const button = fixture.debugElement.query(By.css('[data-test-id="signup-button"]')).nativeElement;
     expect(button.disabled).toBe(false);
   });
 

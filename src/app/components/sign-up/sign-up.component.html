@@ -53,6 +53,7 @@
 
       <button mat-raised-button
               type="submit"
+              data-test-id="signup-button"
               [disabled]="signUpForm.invalid"
               [ngClass]="{'valid': signUpForm.valid, 'invalid': signUpForm.invalid}"
               [aria-disabled]="signUpForm.invalid">Sign Up</button>
