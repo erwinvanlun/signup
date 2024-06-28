@@ -1,32 +1,50 @@
 import { Inject, inject, Injectable } from '@angular/core';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule, HttpResponse } from '@angular/common/http';
 import { firstValueFrom, map, switchMap, tap } from 'rxjs';
+import { SignUpFormValue } from '../../components/sign-up/sign-up-form.type';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AccountService {
 
-  constructor(private http: HttpClient) {
-  }
+  constructor(private http: HttpClient) {}
 
-  signup(formValue: any): Promise<any> {
-    return firstValueFrom(this.http.get<{thumbnailUrl: string}>(`https://jsonplaceholder.typicode.com/photos/${formValue.lastName.length}`)
-      .pipe(
-        tap((response: any) => {
-          if (!response.thumbnailUrl || typeof response.thumbnailUrl !== 'string') {
-            throw new Error('Invalid thumbnailUrl');
-          }
-        }),
-        map((response: {thumbnailUrl: string}) => ({
-          ...formValue,
-          thumbnailUrl: response.thumbnailUrl
-        })),
-        switchMap((postData) => this.http.post('https://jsonplaceholder.typicode.com/users', postData))
-      ))
+  signup(formValue: SignUpFormValue): Promise<void> {
+    return firstValueFrom(
+      this.http.get<unknown>(`https://jsonplaceholder.typicode.com/photos/${formValue.lastName.length}`)
+        .pipe(
+          map(response => {
+            if (isPhotosResponse(response)) {
+              return {
+                ...formValue,
+                thumbnailUrl: response.thumbnailUrl
+              };
+            }
+            throw new Error('Invalid response structure');
+          }),
+          switchMap(postData =>
+            this.http.post<void>('https://jsonplaceholder.typicode.com/users', postData, { observe: 'response' })
+              .pipe(
+                map((response: HttpResponse<void>) => {
+                  if (response.status !== 201) {
+                    throw new Error('Unable to create user');
+                  }
+                })
+              )
+          )
+        )
+    );
   }
 }
 
+export function isPhotosResponse(response: unknown): response is { thumbnailUrl: string } {
+  if (typeof response === 'object' && response) {
+    if ('thumbnailUrl' in response && typeof (response.thumbnailUrl === 'string'))
+      return true;
+  }
+  return false;
+}
 
 
 

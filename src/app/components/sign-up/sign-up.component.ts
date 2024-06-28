@@ -8,6 +8,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCard, MatCardContent, MatCardHeader } from '@angular/material/card';
 import { AccountService } from '../../services/account/account.service';
+import { SignUpFormValue } from './sign-up-form.type';
 
 @Component({
   selector: 'app-sign-up',
@@ -30,7 +31,7 @@ export class SignUpComponent implements OnInit {
   signUpForm: FormGroup;
   fullName = '';
 
-  constructor(private fb: FormBuilder, private accountService: AccountService, private http: HttpClient) {
+  constructor(private fb: FormBuilder, private accountService: AccountService) {
     this.signUpForm = this.fb.group({
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
@@ -66,14 +67,15 @@ export class SignUpComponent implements OnInit {
     console.log('Signing up... ')
 
     try {
-      await (this.accountService.signup(this.signUpForm.value));
+      await (this.accountService.signup(this.signUpForm.value as SignUpFormValue));
 
       console.log('Successfully signed up');
 
       this.signUpForm.enable();
 
     } catch (e) {
-      console.error('Error signing up:', e);
+      console.error('Error signing up, please try again:', e);
+
       this.signUpForm.enable();
 
     }
