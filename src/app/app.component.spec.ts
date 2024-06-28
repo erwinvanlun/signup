@@ -1,4 +1,4 @@
-import { TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { Component, EventEmitter, Output } from '@angular/core';
 import { SignUpComponent } from './components/sign-up/sign-up.component';
@@ -13,6 +13,7 @@ class MockSignUpComponent {
 }
 
 describe('AppComponent', () => {
+  let fixture: ComponentFixture<AppComponent>
   beforeEach(async () => {
     TestBed.overrideComponent(AppComponent, {
       add: {
@@ -25,24 +26,40 @@ describe('AppComponent', () => {
     await TestBed.configureTestingModule({
       imports: [AppComponent],
     }).compileComponents();
+    fixture = TestBed.createComponent(AppComponent);
   });
 
   it('should create the app', () => {
-    const fixture = TestBed.createComponent(AppComponent);
+
     const app = fixture.componentInstance;
     expect(app).toBeTruthy();
   });
 
   it(`should have the 'signup' title`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
     expect(app.title).toEqual('Signup');
   });
 
-  it('should render full name', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, signup');
+  describe('should render full name', () => {
+    it('not on startup', () => {
+      fixture.detectChanges();
+
+      const compiled = fixture.nativeElement as HTMLElement;
+      expect(compiled.querySelector('.full-name')).toBeNull();
+
+    })
+    it('after name has been entered', () => {
+      const mockSignUpComponent = fixture.debugElement.query(
+        (de) => de.componentInstance instanceof MockSignUpComponent
+      ).componentInstance as MockSignUpComponent;
+
+      const fullName = 'John Doe';
+      mockSignUpComponent.fullNameChange.emit(fullName);
+      fixture.detectChanges();
+
+      const compiled = fixture.nativeElement as HTMLElement;
+      expect(compiled.querySelector('.full-name span')?.textContent).toContain(`Soon signing up: ${fullName}`);
+    });
   });
+
 });
