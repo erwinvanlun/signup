@@ -45,22 +45,63 @@ describe('SignUpComponent', () => {
   });
 
   describe('Form Validation', () => {
-    it('should invalidate the form if required fields are missing', () => {
-      component.signUpForm.setValue({
-        firstName: '',
-        lastName: '',
-        email: '',
-        password: ''
+    describe('should invalidate the form if required fields are missing', () => {
+      const validFormData = {
+        firstName: 'Joe',
+        lastName: 'Doe',
+        email: 'joedoe@gmail.com',
+        password: 'MyPassword123'
+      }
+      beforeEach(() => {
+        component.signUpForm.setValue({...validFormData});
       });
-      expect(component.signUpForm.invalid).toBe(true);;
+
+      it('should not accept empty first name', () => {
+        expect(component.signUpForm.valid).toBe(true); // just checking
+        component.signUpForm.setValue({...validFormData, firstName: ''});
+        expect(component.signUpForm.valid).toBe(false);
+      });
+
+      it('should not accept empty last name', () => {
+        component.signUpForm.setValue({...validFormData, lastName: ''});
+        expect(component.signUpForm.valid).toBe(false);
+      });
+
+      it('should not accept empty email', () => {
+        component.signUpForm.setValue({...validFormData, email: ''});
+        expect(component.signUpForm.valid).toBe(false);
+      });
+
+      it('should not accept empty password', () => {
+        component.signUpForm.setValue({...validFormData, password: ''});
+        expect(component.signUpForm.valid).toBe(false);
+      });
     });
 
     it('should validate the email format', () => {
       component.signUpForm.get('email')?.setValue('invalid-email');
-      expect(component.signUpForm.get('email')?.invalid).toBe(true);;
+      expect(component.signUpForm.get('email')?.valid).toBe(false);
+
+      component.signUpForm.get('email')?.setValue('aa@bb'); //we will not allow
+      expect(component.signUpForm.get('email')?.valid).toBe(false);
+
+      component.signUpForm.get('email')?.setValue('aa@bb@');
+      expect(component.signUpForm.get('email')?.valid).toBe(false);
+
+      component.signUpForm.get('email')?.setValue('aa@bb..');
+      expect(component.signUpForm.get('email')?.valid).toBe(false);
+
+      component.signUpForm.get('email')?.setValue('aa@.aa.com');
+      expect(component.signUpForm.get('email')?.valid).toBe(false);
+
+      component.signUpForm.get('email')?.setValue('almost@country.b');
+      expect(component.signUpForm.get('email')?.valid).toBe(false);
 
       component.signUpForm.get('email')?.setValue('valid.email@example.com');
-      expect(component.signUpForm.get('email')?.valid).toBe(true);;
+      expect(component.signUpForm.get('email')?.valid).toBe(true);
+
+      component.signUpForm.get('email')?.setValue('valid.email@example.accountants');
+      expect(component.signUpForm.get('email')?.valid).toBe(true);
     });
 
     it('should validate the password length', () => {

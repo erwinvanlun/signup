@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, AbstractControl, ValidatorFn, ValidationErrors } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
@@ -38,7 +38,7 @@ export class SignUpComponent implements OnInit, OnDestroy {
     this.signUpForm = this.fb.group({
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
+      email: ['', [Validators.required, customEmailValidator()]],
       password: ['', [Validators.required, Validators.minLength(8), this.passwordValidator.bind(this)]]
     });
   }
@@ -58,6 +58,8 @@ export class SignUpComponent implements OnInit, OnDestroy {
       }
     });
   }
+
+
 
   passwordValidator(control: AbstractControl): { [key: string]: boolean } | null {
     const password = control.value;
@@ -99,4 +101,16 @@ export class SignUpComponent implements OnInit, OnDestroy {
     this.destroyed$.complete();
   }
 
+}
+
+function customEmailValidator(): ValidatorFn {
+  //const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$/;
+  return (control: AbstractControl): ValidationErrors | null => {
+    const value = control.value;
+    if (!value) {
+      return null;
+    }
+    return emailRegex.test(value) ? null : {invalidEmail: true};
+  };
 }
