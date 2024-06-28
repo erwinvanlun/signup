@@ -1,5 +1,8 @@
 <div class="page">
+  <app-sign-up (fullNameChange)="onFullNameChange($event)"></app-sign-up>
 
-  <app-sign-up></app-sign-up>
+  <div class="full-name" *ngIf="fullName">
+    <span>Soon signing up: {{ fullName }}</span>
+  </div>
 
 </div>

@@ -1,6 +1,5 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
@@ -33,6 +32,7 @@ const passwordMinLength = 8;
 export class SignUpComponent implements OnInit, OnDestroy {
   signUpForm: FormGroup;
   fullName = '';
+  @Output() fullNameChange = new EventEmitter<string>();
   protected destroyed$ = new Subject<void>();
 
   constructor(private fb: FormBuilder, private accountService: AccountService) {
@@ -47,7 +47,7 @@ export class SignUpComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
 
     this.signUpForm.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(values => {
-      this.fullName = `${values.firstName} ${values.lastName}`;
+      this.fullNameChange.emit(`${values.firstName} ${values.lastName}`);
     });
 
     // as password is the last field, and user Joe Doe, who used 'Doe' in his

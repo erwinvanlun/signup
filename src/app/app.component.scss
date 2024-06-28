@@ -1,11 +1,21 @@
 .page {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap: 2rem;
   height: 100%;
   background: linear-gradient(45deg, #7B1FA2, #8E24AA, #9C27B0, #AB47BC, #BA68C8);
   background-size: 400% 400%;
   animation: gradientAnimation 2s ease infinite;
+
+  .full-name {
+    background: white;
+    color: darkslategrey;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    text-align: center;
+  }
 }
 
 @keyframes gradientAnimation {
