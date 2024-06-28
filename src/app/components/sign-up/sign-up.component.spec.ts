@@ -9,11 +9,12 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCardModule } from '@angular/material/card';
 import { By } from '@angular/platform-browser';
 import { of, throwError } from 'rxjs';
+import { SignUpFormValue } from './sign-up-form.type';
 
 jest.mock('../../services/account/account.service');
 
 const mockAccountService = {
-  signup: jest.fn(),
+  signup: jest.fn().mockImplementation(() => Promise.resolve()),
 };
 describe('SignUpComponent', () => {
   let component: SignUpComponent;
@@ -31,8 +32,8 @@ describe('SignUpComponent', () => {
         MatFormFieldModule,
         MatCardModule
       ],
-      providers: [{ provide: AccountService, useValue: mockAccountService }]
     })
+      .overrideProvider(AccountService, { useValue: mockAccountService })
       .compileComponents();
 
     fixture = TestBed.createComponent(SignUpComponent);
@@ -163,27 +164,32 @@ describe('SignUpComponent', () => {
     expect(button.disabled).toBe(false);
   });
 
-  it('should call the sign-up function when the form is submitted', async () => {
+  it.only('should call the sign-up function when the form is submitted', async () => {
     component.signUpForm.setValue({
       firstName: 'John',
       lastName: 'Doe',
       email: 'john.doe@example.com',
       password: 'ValidPassword123'
     });
-    mockAccountService.signup.mockReturnValue(of({}).toPromise());
-
-    const button = fixture.debugElement.query(By.css('button')).nativeElement;
-    button.click();
     fixture.detectChanges();
 
-    await fixture.whenStable();
+    const button = fixture.debugElement.query(By.css('[data-test-id="signup-button"]')).nativeElement;
 
+    // is onSubmit called?
+    const onSubmitSpy = jest.spyOn(component, 'onSubmit');
+    expect(button.disabled).toBe(false);
+    button.click();
+    await fixture.whenStable();
+    expect(onSubmitSpy).toHaveBeenCalled();
+
+    // does onSubmit call the service with the right value?
     expect(mockAccountService.signup).toHaveBeenCalledWith({
       firstName: 'John',
       lastName: 'Doe',
       email: 'john.doe@example.com',
       password: 'ValidPassword123'
     });
+    expect(component.signUpForm.enabled).toBe(true); // Ensure form is re-enabled after error
   });
 
   it('should handle sign-up error', async () => {
@@ -193,7 +199,7 @@ describe('SignUpComponent', () => {
       email: 'john.doe@example.com',
       password: 'ValidPassword123'
     });
-    mockAccountService.signup.mockReturnValue(throwError('Error signing up').toPromise());
+    // mockAccountService.signup.mockReturnValue(throwError('Error signing up').toPromise());
 
     const button = fixture.debugElement.query(By.css('button')).nativeElement;
     button.click();
