@@ -1,6 +1,5 @@
-import { Component, effect, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterOutlet } from '@angular/router';
 import { SignUpComponent } from './components/sign-up/sign-up.component';
 
 @Component({
