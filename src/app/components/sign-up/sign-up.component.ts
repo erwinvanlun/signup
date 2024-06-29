@@ -88,7 +88,7 @@ export class SignUpComponent implements OnInit, OnDestroy {
       this.signUpForm.enable();
 
     } catch (e) {
-      console.error('Error signing up, please try again', e);
+      console.log('Error signing up, please try again' + e);
 
       this.signUpForm.enable();
 
@@ -97,6 +97,7 @@ export class SignUpComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+
     this.destroyed$.next();
     this.destroyed$.complete();
   }
@@ -104,7 +105,6 @@ export class SignUpComponent implements OnInit, OnDestroy {
 }
 
 function customEmailValidator(): ValidatorFn {
-  //const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   const emailRegex = /^[a-zA-Z0-9._%+-]+@([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$/;
   return (control: AbstractControl): ValidationErrors | null => {
     const value = control.value;
