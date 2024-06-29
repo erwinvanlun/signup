@@ -45,7 +45,8 @@ export class SignUpComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
-    this.signUpForm.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(values => {
+    this.signUpForm.valueChanges.pipe(
+      takeUntil(this.destroyed$)).subscribe(values => {
       this.fullNameChange.emit(`${values.firstName} ${values.lastName}`);
     });
 
@@ -88,7 +89,7 @@ export class SignUpComponent implements OnInit, OnDestroy {
       this.signUpForm.enable();
 
     } catch (e) {
-      console.log('Error signing up, please try again' + e);
+      console.log('Error signing up, please try again ' + e);
 
       this.signUpForm.enable();
 

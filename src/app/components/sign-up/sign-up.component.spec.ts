@@ -221,15 +221,19 @@ describe('SignUpComponent', () => {
     fixture.detectChanges();
     mockAccountService.signup =   jest.fn().mockImplementation(() => Promise.reject('error text'));
 
-    const button = fixture.debugElement.query(By.css('button')).nativeElement;
-    const consoleErrorSpy = jest.spyOn(console, 'error');
+    const button = fixture.debugElement.query(By.css('[data-test-id="signup-button"]')).nativeElement;
+    const consoleLogSpy = jest.spyOn(console, 'log');
 
     button.click();
 
     await fixture.whenStable();
 
     expect(component.signUpForm.enabled).toBe(true);
-    expect(consoleErrorSpy).toHaveBeenCalledWith('Error signing up, please try again', 'error text');
-    consoleErrorSpy.mockRestore();
+    expect(consoleLogSpy).toHaveBeenCalledTimes(2);
+    const secondLog = consoleLogSpy.mock.calls[1][0];
+
+    expect(secondLog).toContain('error text');
+
+    consoleLogSpy.mockRestore();
   });
 });
