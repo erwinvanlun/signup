@@ -127,18 +127,36 @@ describe('SignUpComponent', () => {
         firstName: 'John',
         lastName: 'Doe',
         email: 'john.doe@example.com',
-        password: 'john12345'
+        password: 'John12345'
       });
-      fixture.detectChanges(); // Trigger validation
+      fixture.detectChanges();
       expect(component.signUpForm.get('password')?.errors?.['nameIncluded']).toBeTruthy();
 
       component.signUpForm.setValue({
         firstName: 'John',
         lastName: 'Doe',
         email: 'john.doe@example.com',
-        password: 'doe12345'
-      });  fixture.detectChanges(); // Trigger validation
+        password: 'john12345UPPERCHARS'
+      });
+      fixture.detectChanges();
+      expect(component.signUpForm.get('password')?.errors?.['nameIncluded']).toBeTruthy();
 
+      component.signUpForm.setValue({
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john.doe@example.com',
+        password: 'Doe12345'
+      });
+      fixture.detectChanges();
+      expect(component.signUpForm.get('password')?.errors?.['nameIncluded']).toBeTruthy();
+
+      component.signUpForm.setValue({
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john.doe@example.com',
+        password: 'doe12345UPPERCHARS'
+      });
+      fixture.detectChanges();
       expect(component.signUpForm.get('password')?.errors?.['nameIncluded']).toBeTruthy();
 
       component.signUpForm.setValue({
@@ -147,7 +165,7 @@ describe('SignUpComponent', () => {
         email: 'john.doe@example.com',
         password: 'ValidPassword123'
       });
-      fixture.detectChanges(); // Trigger validation
+      fixture.detectChanges();
       expect(component.signUpForm.get('password')?.errors?.['nameIncluded']).toBeFalsy();
     });
   });
