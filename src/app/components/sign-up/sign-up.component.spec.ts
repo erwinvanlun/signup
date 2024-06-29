@@ -115,7 +115,7 @@ describe('SignUpComponent', () => {
       component.signUpForm.get('password')?.setValue('alllowercase');
       expect(component.signUpForm.get('password')?.errors?.['case']).toBeTruthy();
 
-      component.signUpForm.get('password')?.setValue('ALLUPPfERCASE');
+      component.signUpForm.get('password')?.setValue('ALLUPPERCASE');
       expect(component.signUpForm.get('password')?.errors?.['case']).toBeTruthy();
 
       component.signUpForm.get('password')?.setValue('MixedCasePassword');
@@ -129,6 +129,7 @@ describe('SignUpComponent', () => {
         email: 'john.doe@example.com',
         password: 'john12345'
       });
+      fixture.detectChanges(); // Trigger validation
       expect(component.signUpForm.get('password')?.errors?.['nameIncluded']).toBeTruthy();
 
       component.signUpForm.setValue({
@@ -136,7 +137,8 @@ describe('SignUpComponent', () => {
         lastName: 'Doe',
         email: 'john.doe@example.com',
         password: 'doe12345'
-      });
+      });  fixture.detectChanges(); // Trigger validation
+
       expect(component.signUpForm.get('password')?.errors?.['nameIncluded']).toBeTruthy();
 
       component.signUpForm.setValue({
@@ -145,6 +147,7 @@ describe('SignUpComponent', () => {
         email: 'john.doe@example.com',
         password: 'ValidPassword123'
       });
+      fixture.detectChanges(); // Trigger validation
       expect(component.signUpForm.get('password')?.errors?.['nameIncluded']).toBeFalsy();
     });
   });
