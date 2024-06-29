@@ -8,7 +8,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCard, MatCardContent, MatCardHeader } from '@angular/material/card';
 import { AccountService } from '../../services/account/account.service';
 import { SignUpFormValue } from './sign-up-form.type';
-import { Subject, takeUntil } from 'rxjs';
+import { pairwise, Subject, takeUntil } from 'rxjs';
 
 const passwordMinLength = 8;
 
@@ -46,9 +46,16 @@ export class SignUpComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
 
     this.signUpForm.valueChanges.pipe(
-      takeUntil(this.destroyed$)).subscribe(values => {
-      this.fullNameChange.emit(`${values.firstName} ${values.lastName}`);
-    });
+      takeUntil(this.destroyed$),
+      pairwise()
+    ).subscribe(([previousValues, currentValues]) => {
+        this.fullNameChange.emit(`${currentValues.firstName} ${currentValues.lastName}`);
+
+        if (previousValues.firstName !== currentValues.firstName || previousValues.lastName !== currentValues.lastName) {
+          this.signUpForm.get('password')?.updateValueAndValidity();
+        }
+      }
+    );
 
     // as password is the last field, and user Joe Doe, who used 'Doe' in his
     // password might wonder why the button is not enabled. Therefore, after 8 chars the validator function is executed.
@@ -61,16 +68,17 @@ export class SignUpComponent implements OnInit, OnDestroy {
   }
 
 
-
   passwordValidator(control: AbstractControl): { [key: string]: boolean } | null {
-    const password = control.value;
-    const firstName = this.signUpForm?.get('firstName')?.value;
-    const lastName = this.signUpForm?.get('lastName')?.value;
+    const password = control.value || '';
+    const firstName = (this.signUpForm?.get('firstName')?.value || '').toLowerCase();
+    const lastName = (this.signUpForm?.get('lastName')?.value || '').toLowerCase();
 
     if (!password) return null;
     if (password.length < passwordMinLength) return {'minLength': true};
     if (!/[a-z]/.test(password) || !/[A-Z]/.test(password)) return {'case': true};
-    if (password.toLowerCase().includes(firstName.toLowerCase()) || password.toLowerCase().includes(lastName.toLowerCase())) return {'nameIncluded': true};
+
+    if (firstName.length > 0 && password.toLowerCase().includes(firstName)) return {'nameIncluded': true};
+    if (lastName.length > 0 && password.toLowerCase().includes(lastName)) return {'nameIncluded': true};
 
     return null;
   }
@@ -112,6 +120,6 @@ function customEmailValidator(): ValidatorFn {
     if (!value) {
       return null;
     }
-    return emailRegex.test(value) ? null : {invalidEmail: true};
+    return emailRegex.test(value) ? null : {emailInvalid: true};
   };
 }

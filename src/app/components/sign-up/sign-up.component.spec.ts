@@ -80,6 +80,7 @@ describe('SignUpComponent', () => {
     it('should validate the email format', () => {
       component.signUpForm.get('email')?.setValue('invalid-email');
       expect(component.signUpForm.get('email')?.valid).toBe(false);
+      expect(component.signUpForm.get('email')?.errors?.['emailInvalid']).toBeTruthy();
 
       component.signUpForm.get('email')?.setValue('aa@bb'); //we will not allow
       expect(component.signUpForm.get('email')?.valid).toBe(false);
@@ -167,6 +168,11 @@ describe('SignUpComponent', () => {
       });
       fixture.detectChanges();
       expect(component.signUpForm.get('password')?.errors?.['nameIncluded']).toBeFalsy();
+
+      // now change first name in Valid, password field should give an error
+      component.signUpForm.get('firstName')?.setValue('Valid');
+      fixture.detectChanges();
+      expect(component.signUpForm.get('password')?.errors?.['nameIncluded']).toBeTruthy();
     });
   });
 
