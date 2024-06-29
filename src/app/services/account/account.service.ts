@@ -1,6 +1,6 @@
-import { Inject, inject, Injectable } from '@angular/core';
-import { HttpClient, HttpClientModule, HttpResponse } from '@angular/common/http';
-import { firstValueFrom, map, switchMap, tap } from 'rxjs';
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpResponse } from '@angular/common/http';
+import { firstValueFrom, map, switchMap } from 'rxjs';
 import { SignUpFormValue } from '../../components/sign-up/sign-up-form.type';
 
 @Injectable({
@@ -38,7 +38,8 @@ export class AccountService {
   }
 }
 
-export function isPhotosResponse(response: unknown): response is { thumbnailUrl: string } {
+// type guarding the response from https://jsonplaceholder.typicode.com
+function isPhotosResponse(response: unknown): response is { thumbnailUrl: string } {
   if (typeof response === 'object' && response) {
     if ('thumbnailUrl' in response && typeof (response.thumbnailUrl === 'string'))
       return true;
