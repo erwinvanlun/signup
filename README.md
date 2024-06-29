@@ -8,20 +8,27 @@
 
 Once the app is running, after entering valid information, the 'signup' button will be enabled. On click, the registration will be completed. This will typically succeed and result is logged in the console. In case an error occurs, this is also logged in the console.
 
-# Prerequisites
-
-| Item # | item | Version                 |
-|--------|------|-------------------------|
-| 1      | Node |  | 20.2.1 |
-
 ## Comments
-- Using Angular 18.3 
-- I have used Angular 18 for this project, as requested. As I didn't have experience with standalone components nor with signals, this part might not be ideal. For the unit test of the standalone components I made use of ChatGPT. 
-- storybook with Cypress could be used for extended testing and improved development experience
-- implemented basic accessibility wit the use of ChatGPT. 
+- Using Angular 18.0.5
+- Using StandAlone component for SignUp (first time I was working with StandAlone components)
+- Would have loved to dive into NgRx Signals Store for cross component communication but to far fetched for now.
+- Implemented basic accessibility  (not used to this)
+
+# Installation 
+
+## Prerequisites
+
+| Item # | item | Version                |
+|--------|------|------------------------|
+| 1      | Node |   18.19.0 |
+
+# Install dependencies
+
+Run `npm install` to install the dependencies
 
 ## Serve
-> ng serve
+
+Run `ng serve` to run the application locally. 
 
 ## Build
 
@@ -30,6 +37,7 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 ## Running unit tests
 
 Run `jest` to execute the unit tests via Jest.
+(please note that the user notification in the console will also appear in the test results
 
 ## Running lint
 
